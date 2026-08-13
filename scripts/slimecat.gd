@@ -16,7 +16,8 @@ const Utils = preload("res://scripts/utils.gd")
 @export var AIR_FRICTION: float = 0.0
 
 # Variables related to character standing still
-# - L0 : resting distance between Head and Butt
+# - HEADBUTT_DISTANCE : resting distance between Head and Butt
+# - BODY_STIFFNESS : Stiffness of the spring linking Head and Butt.
 # - HEADBODYRATIO : [ mass of head ] / [ mass of body ]
 # - STANDING_STRENGTH : Strength of the neck of the character ( hability to 
 #                       to correct the angle speed at which their poor head 
@@ -24,7 +25,8 @@ const Utils = preload("res://scripts/utils.gd")
 # - IDEAL_ANGLE_SPEED : Speed at which the character _wants_ to turn their head
 #                       while getting up. 
 # - STILL_ANGLE : Angle of verticality ( commodity constant )
-@export var L0: float = 13 
+@export var HEADBUTT_DISTANCE: float = 13.0
+@export var BODY_STIFFNESS: float = 12.0
 @export var HEADBODYRATIO: float = 0.5 
 @export_range(0.0, 10.0) var STANDING_STRENGTH: float = 25.0 
 @export_range(0.0, 10.0) var IDEAL_ANGLE_SPEED: float = 2.0
@@ -104,9 +106,10 @@ func _head_butt_interaction(delta: float) -> void:
 	""" Adjust the Head's and Butt's velocities.
 	
 	The Head and Butt are attached together with a semi-rigid pole.
-	The pole acts like a spring with resting length L0. 
-	Its length is clipped to a segment [ alpha L0, beta L0 ] to avoid the 
-	character from being torn apart.
+	The pole acts like a spring with resting length HEADBUTT_DISTANCE. 
+	Its length is clipped to a segment 
+	        [ alpha HEADBUTT_DISTANCE, beta HEADBUTT_DISTANCE ] 
+	to avoid the character from being torn apart.
 	
 	The character further tries to stand up when eligible. """
 	
@@ -132,9 +135,9 @@ func _head_butt_interaction(delta: float) -> void:
 		dtheta = move_toward(dtheta, target_speed, STANDING_STRENGTH * delta)
 	
 	# Correct distance between head & butt
-	var dL: float = 12 * (L0 - L) * delta
+	var dL: float = BODY_STIFFNESS * (HEADBUTT_DISTANCE - L) * delta
 	dL += (v_butt + r * v_head).dot(axis) / (1 + r) * delta 
-	L = Utils.clip(L + dL, 0.66 * L0, 1.2 * L0)
+	L = Utils.clip(L + dL, 0.66 * HEADBUTT_DISTANCE, 1.2 * HEADBUTT_DISTANCE)
 	
 	# Compute ideal next positions
 	var new_theta: float = Utils.mod_2PI(theta + dtheta)
