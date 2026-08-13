@@ -23,6 +23,13 @@ window/stretch/mode="canvas_items"
 window/stretch/aspect="ignore"
 window/stretch/scale=2.0
 
+[file_customization]
+
+folder_colors={
+"res://scenes/": "red",
+"res://scripts/": "yellow"
+}
+
 [input]
 
 move_left={

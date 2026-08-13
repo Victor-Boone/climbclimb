@@ -1,4 +1,5 @@
 extends Node2D
+const Utils = preload("res://scripts/utils.gd")
 
 @export var L0: float = 13 # resting distance between ends
 @export var WALK_SPEED: float = 90.0
@@ -22,13 +23,6 @@ func _ready() -> void:
 	$Head.floor_max_angle = 10.0
 	pass # Replace with function body.
 
-
-func clip(x: float, inf: float, sup: float) -> float:
-	return min(sup, max(x, inf))
-func mod_2PI(angle: float) -> float:
-	return angle - 2 * PI * floor(0.5 * angle / PI)
-
-
 func butt_is_on_floor() -> bool:
 	return $Butt.get_distance_to_floor() < 0.2
 func head_is_on_floor() -> bool:
@@ -40,7 +34,7 @@ func body_angle() -> float:
 	""" Return the body angle, in the range [0, 2PI] """
 	var body: Vector2 = $Head.position - $Butt.position
 	var angle: float = body.angle()
-	return mod_2PI(angle)
+	return Utils.mod_2PI(angle)
 
 
 func is_standing() -> bool:
@@ -49,7 +43,7 @@ func is_standing() -> bool:
 
 func desired_angle_speed_wrt(angle: float) -> float:
 	var angle_to_still: float = STILL_ANGLE - angle
-	angle_to_still = mod_2PI(angle_to_still + PI) - PI
+	angle_to_still = Utils.mod_2PI(angle_to_still + PI) - PI
 	return IDEAL_ANGLE_SPEED * angle_to_still
 	
 
@@ -117,10 +111,10 @@ func _correct_velocity(delta: float) -> void:
 	# Correct distance between head & butt
 	var dL: float = 12 * (L0 - L) * delta
 	dL += (v_butt + r * v_head).dot(axis) / (1 + r) * delta 
-	L = clip(L + dL, 0.66 * L0, 1.2 * L0)
+	L = Utils.clip(L + dL, 0.66 * L0, 1.2 * L0)
 	
 	# Compute ideal next positions
-	var new_theta: float = mod_2PI(theta + dtheta)
+	var new_theta: float = Utils.mod_2PI(theta + dtheta)
 	var cossin: Vector2 = Vector2(1, 0).rotated(new_theta)
 	var next_p_butt: Vector2 = p + dp - r/(1+r)*L*cossin
 	var next_p_head: Vector2 = p + dp + 1/(1+r)*L*cossin
