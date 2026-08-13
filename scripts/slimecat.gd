@@ -171,9 +171,46 @@ func _head_butt_interaction(delta: float) -> void:
 
 # Climb logic
 
+@export var ARM_LENGTH: float = 5
+var rh_velocity = Vector2.ZERO
+var lh_velocity = Vector2.ZERO
+
+func grip_area_position() -> Vector2:
+	return 0.25 * $Butt.position + 0.75 * $Head.position
 func _update_grip_area() -> void:
-	var grip_center = 0.25 * $Butt.position + 0.75 * $Head.position
-	$GripArea.position = grip_center
+	$GripArea.position = grip_area_position()
+
+func _hanging_hands(delta: float) -> void:
+	var p = grip_area_position()
+	var g = $Butt.get_gravity()
+	
+	# Right hand
+	var rh_p = $RightHand.position
+	# rh_velocity += GRAVITY_SCALING * g * delta
+	rh_velocity += 10.0 * (rh_p - p).normalized() * ((rh_p - p).length() - ARM_LENGTH) * delta
+	$RightHand.position += rh_velocity * delta
+	# Apply clipping
+	var r_dir = $RightHand.position - p
+	var rL = Utils.clip(r_dir.length(), 0.0, 1.5 * ARM_LENGTH)
+	$RightHand.position = p + r_dir.normalized() * rL
+	# Correct velocity
+	rh_velocity = ($RightHand.position - rh_p) / delta
+	
+	# Left hand
+	var lh_p = $LeftHand.position
+	# lh_velocity += GRAVITY_SCALING * g * delta
+	lh_velocity += 10.0 * (lh_p - p).normalized() * ((lh_p - p).length() - ARM_LENGTH) * delta
+	$LeftHand.position += lh_velocity * delta
+	# Apply clipping
+	var l_dir = $LeftHand.position - p
+	var lL = Utils.clip(l_dir.length(), 0.0, 1.5 * ARM_LENGTH)
+	$LeftHand.position = p + l_dir.normalized() * lL
+	# Correct velocity
+	lh_velocity = ($LeftHand.position - lh_p) / delta
+	
+	
+
+
 
 func _DEBUG_display_grip_points() -> void:
 	"""
@@ -236,6 +273,7 @@ func _physics_process(delta: float) -> void:
 	flip_head()
 	_update_grip_area()
 	_DEBUG_display_grip_points()
+	_hanging_hands(delta)
 	
 	# Debug
 	$Butt._update_velocity_vector()

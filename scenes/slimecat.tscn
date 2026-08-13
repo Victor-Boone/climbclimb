@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://ccx6ypgdttutr" path="res://assets/character/head.png" id="3_dr1d1"]
 [ext_resource type="PackedScene" uid="uid://dl5saaqvqjjak" path="res://scenes/bodypart.tscn" id="4_mgm2w"]
 [ext_resource type="Script" uid="uid://ku0ncebvof15" path="res://scripts/debug_line.gd" id="5_mgm2w"]
+[ext_resource type="Texture2D" uid="uid://b544o8uh4wvlm" path="res://assets/character/hand.png" id="6_qlic1"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6tant"]
 radius = 6.0
@@ -71,6 +72,17 @@ width = 0.0
 begin_cap_mode = 2
 end_cap_mode = 2
 script = ExtResource("5_mgm2w")
+
+[node name="RightHand" type="Sprite2D" parent="." unique_id=566096265]
+z_index = 5
+position = Vector2(17, -11)
+texture = ExtResource("6_qlic1")
+
+[node name="LeftHand" type="Sprite2D" parent="." unique_id=58633450]
+z_index = 5
+position = Vector2(-18, -14)
+texture = ExtResource("6_qlic1")
+flip_h = true
 
 [editable path="Butt"]
 [editable path="Head"]
