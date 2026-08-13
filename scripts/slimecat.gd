@@ -40,7 +40,10 @@ var state: State = State.IDLE
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass 
+	$Head/DebugVector.hide() 
+	$Head/DownRay.hide()
+	$Butt/DebugVector.hide()
+	$Butt/DownRay.hide()
 
 
 
@@ -78,7 +81,6 @@ func movement_manager() -> void:
 	var direction: float = Input.get_axis("move_left", "move_right")
 	var v_butt = $Butt.velocity
 	var v_head = $Head.velocity
-	print("Is_on_floor:", is_on_floor())
 	if Input.is_action_just_pressed("jump") and is_standing() and is_on_floor(): # Jumping
 		state = State.IDLE
 		$Butt.velocity.y -= JUMP_VELOCITY
@@ -167,6 +169,19 @@ func _head_butt_interaction(delta: float) -> void:
 
 
 
+# Climb logic
+
+func _update_grip_area() -> void:
+	var grip_center = 0.25 * $Butt.position + 0.75 * $Head.position
+	$GripArea.position = grip_center
+	var collisions = $GripArea.get_overlapping_areas()
+	print(collisions)
+	for area in collisions:
+		var tip: Vector2 = area.get_tip()
+		var end: Vector2 = area.get_end()
+		print("Got a line ", tip, " to ", end)
+
+
 # External Physics
 
 func _apply_gravity(delta: float) -> void:
@@ -206,6 +221,7 @@ func _physics_process(delta: float) -> void:
 	# Visuals
 	rotate_head()
 	flip_head()
+	_update_grip_area()
 	
 	# Debug
 	$Butt._update_velocity_vector()

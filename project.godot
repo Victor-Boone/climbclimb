@@ -64,6 +64,11 @@ climb={
 ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="Collisions"
+2d_physics/layer_2="Climbing"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
