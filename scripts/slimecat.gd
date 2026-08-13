@@ -1,57 +1,65 @@
 extends Node2D
 const Utils = preload("res://scripts/utils.gd")
 
-@export var L0: float = 13 # resting distance between ends
+# Movement related variables
+# - WALK_SPEED : Top speed while walking
+# - AIR_SPEED : Top speed while airborn
+# - JUMP_VELOCITY : Crude velocity set when jumping. 
 @export var WALK_SPEED: float = 90.0
 @export var AIR_SPEED: float = WALK_SPEED / 5.0
 @export var JUMP_VELOCITY: float = 500.0
-@export var HEADBODYRATIO: float = 0.5 # [ mass of head ] / [ mass of body ]
 
+# Physics related variables ( how the character is affected by physics )
+# - GRAVITY_SCALING : Beware of that force that pulls you down.
+# - AIR_FRICTION : How much the air slow downs the character mid-air. 
 @export_range(0.0, 1.0) var GRAVITY_SCALING : float = 1.0
 @export var AIR_FRICTION: float = 0.0
-@export var GROUND_FRICTION: float = 0.99
-@export_range(0.0, 10.0) var STANDING_STRENGTH: float = 25.0
+
+# Variables related to character standing still
+# - L0 : resting distance between Head and Butt
+# - HEADBODYRATIO : [ mass of head ] / [ mass of body ]
+# - STANDING_STRENGTH : Strength of the neck of the character ( hability to 
+#                       to correct the angle speed at which their poor head 
+#                       is yangling around. )
+# - IDEAL_ANGLE_SPEED : Speed at which the character _wants_ to turn their head
+#                       while getting up. 
+# - STILL_ANGLE : Angle of verticality ( commodity constant )
+@export var L0: float = 13 
+@export var HEADBODYRATIO: float = 0.5 
+@export_range(0.0, 10.0) var STANDING_STRENGTH: float = 25.0 
 @export_range(0.0, 10.0) var IDEAL_ANGLE_SPEED: float = 2.0
 const STILL_ANGLE = 1.5 * PI
 
+# State automaton 
 enum State { IDLE, WALK, STUN }
 var state: State = State.IDLE
 
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	$Head.floor_max_angle = 10.0
-	pass # Replace with function body.
-
-func butt_is_on_floor() -> bool:
-	return $Butt.get_distance_to_floor() < 0.2
-func head_is_on_floor() -> bool:
-	return $Head.get_distance_to_floor() < 0.13
-func is_on_floor() -> bool:
-	return butt_is_on_floor()
-
-func body_angle() -> float:
-	""" Return the body angle, in the range [0, 2PI] """
-	var body: Vector2 = $Head.position - $Butt.position
-	var angle: float = body.angle()
-	return Utils.mod_2PI(angle)
+	pass 
 
 
-func is_standing() -> bool:
-	return abs(body_angle() - STILL_ANGLE) < 0.25 * PI
+
+# Properties of the character
+func butt_is_on_floor() -> bool: return $Butt.get_distance_to_floor() < 0.2
+func head_is_on_floor() -> bool: return $Head.get_distance_to_floor() < 0.13
+func is_on_floor()      -> bool: return butt_is_on_floor()
+func is_standing()      -> bool: return abs(body_angle() - STILL_ANGLE) < 0.25 * PI
 
 
-func desired_angle_speed_wrt(angle: float) -> float:
-	var angle_to_still: float = STILL_ANGLE - angle
-	angle_to_still = Utils.mod_2PI(angle_to_still + PI) - PI
-	return IDEAL_ANGLE_SPEED * angle_to_still
-	
 
+# Visual-related functions
 func rotate_head() -> void:
+	""" Rotate the face relatively to the body angle. """
 	var p_butt: Vector2 = $Butt.position
 	var p_head: Vector2 = $Head.position
 	var angle: float = (p_butt - p_head).angle()
 	$Head.rotation = angle - PI/2
+
+
+# Player input
 
 func movement_manager() -> void:
 	"""Manage the Player's input for movement. """
@@ -73,20 +81,35 @@ func movement_manager() -> void:
 	else: 
 		state = State.IDLE
 	# state = State.STUN
+
+
+
+# Internal Physics (mostly interection between body parts)
+
+func body_angle() -> float:
+	""" Return the body angle, in the range [0, 2PI] """
+	var body: Vector2 = $Head.position - $Butt.position
+	var angle: float = body.angle()
+	return Utils.mod_2PI(angle)
+
+
+func desired_angle_speed_wrt(angle: float) -> float:
+	""" Return the angle-speed desired by the character when standing-up. """
+	var angle_to_still: float = STILL_ANGLE - angle
+	angle_to_still = Utils.mod_2PI(angle_to_still + PI) - PI
+	return IDEAL_ANGLE_SPEED * angle_to_still
+
+
+func _head_butt_interaction(delta: float) -> void:
+	""" Adjust the Head's and Butt's velocities.
 	
-
-func _apply_gravity(delta: float) -> void:
-	""" Apply gravity to Butt and Head. """
-	if not $Butt.is_on_floor():
-		var butt_gravity = GRAVITY_SCALING * $Butt.get_gravity()
-		$Butt.velocity += butt_gravity * delta
-	if not $Head.is_on_floor():
-		var head_gravity = GRAVITY_SCALING * $Head.get_gravity()
-		$Head.velocity += head_gravity * delta
-		
-
-func _correct_velocity(delta: float) -> void:
-	""" Pole correction. """
+	The Head and Butt are attached together with a semi-rigid pole.
+	The pole acts like a spring with resting length L0. 
+	Its length is clipped to a segment [ alpha L0, beta L0 ] to avoid the 
+	character from being torn apart.
+	
+	The character further tries to stand up when eligible. """
+	
 	# Aliases
 	var r: float = HEADBODYRATIO
 	var p_butt: Vector2 = $Butt.position
@@ -128,10 +151,26 @@ func _correct_velocity(delta: float) -> void:
 	# Correction done
 	$Butt.velocity = new_v_butt
 	$Head.velocity = new_v_head
-	
+
+
+
+# External Physics
+
+func _apply_gravity(delta: float) -> void:
+	""" Apply gravity to Butt and Head. """
+	if not $Butt.is_on_floor():
+		var butt_gravity = GRAVITY_SCALING * $Butt.get_gravity()
+		$Butt.velocity += butt_gravity * delta
+	if not $Head.is_on_floor():
+		var head_gravity = GRAVITY_SCALING * $Head.get_gravity()
+		$Head.velocity += head_gravity * delta
+
 
 func _apply_velocity(delta) -> void:
-	""" Move Butt and Head. """
+	""" Move Butt and Head. 
+	
+	Both use an home-made method 'move_and_bounce()' for wiggling physics.
+	Refer to 'move_and_bounce()' in 'bodypart.gd' for more information. """
 	$Butt.move_and_bounce(delta)
 	$Head.move_and_bounce(delta)
 
@@ -140,12 +179,20 @@ func _apply_air_friction(delta) -> void:
 	$Butt.velocity *= pow(1.0 - AIR_FRICTION, delta)
 	$Head.velocity *= pow(1.0 - AIR_FRICTION, delta)
 
+
 func _physics_process(delta: float) -> void:
+	# Read Player's input
 	movement_manager()
-	_correct_velocity(delta)
-	# _apply_air_friction(delta)
+	
+	# Compute physics
+	_head_butt_interaction(delta)
+	_apply_air_friction(delta)
 	_apply_gravity(delta)
 	_apply_velocity(delta)
+	
+	# Visuals
 	rotate_head()
+	
+	# Debug
 	$Butt._update_velocity_vector()
 	$Head._update_velocity_vector()
