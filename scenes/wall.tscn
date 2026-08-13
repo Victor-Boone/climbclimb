@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://bnu18m4tyakyj"]
+
+[ext_resource type="PackedScene" uid="uid://n0i7w0n7vtf2" path="res://scenes/block.tscn" id="1_wykyb"]
+
+[node name="Wall" type="Area2D" unique_id=962828456]
+
+[node name="Block9" parent="." unique_id=869173033 instance=ExtResource("1_wykyb")]
+position = Vector2(96, 0)
+
+[node name="Block8" parent="." unique_id=1748472321 instance=ExtResource("1_wykyb")]
+position = Vector2(80, 0)
+
+[node name="Block7" parent="." unique_id=251513808 instance=ExtResource("1_wykyb")]
+position = Vector2(112, 0)
+
+[node name="Block" parent="." unique_id=1316191730 instance=ExtResource("1_wykyb")]
+
+[node name="Block2" parent="." unique_id=1452565554 instance=ExtResource("1_wykyb")]
+position = Vector2(16, 0)
+
+[node name="Block3" parent="." unique_id=1697743122 instance=ExtResource("1_wykyb")]
+position = Vector2(32, 0)
+
+[node name="Block4" parent="." unique_id=229949024 instance=ExtResource("1_wykyb")]
+position = Vector2(48, 0)
+
+[node name="Block6" parent="." unique_id=1332894229 instance=ExtResource("1_wykyb")]
+position = Vector2(64, 0)

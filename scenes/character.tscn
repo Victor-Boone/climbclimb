@@ -1,0 +1,105 @@
+[gd_scene format=3 uid="uid://t4p1l4858xxe"]
+
+[ext_resource type="Script" uid="uid://c3t3ijs6mwxxx" path="res://scenes/character.gd" id="1_lrhn5"]
+[ext_resource type="Texture2D" uid="uid://g40v8xrd00rk" path="res://assets/character/idle.png" id="1_rkhd4"]
+[ext_resource type="Texture2D" uid="uid://ltwfi0m7k8nd" path="res://assets/character/walk.png" id="2_lrhn5"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_my7n2"]
+atlas = ExtResource("2_lrhn5")
+region = Rect2(48, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dp8ca"]
+atlas = ExtResource("2_lrhn5")
+region = Rect2(64, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0lw5n"]
+atlas = ExtResource("2_lrhn5")
+region = Rect2(16, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2cgup"]
+atlas = ExtResource("2_lrhn5")
+region = Rect2(32, 0, 16, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ywf6o"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_rkhd4")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_my7n2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dp8ca")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0lw5n")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2cgup")
+}],
+"loop": 1,
+"name": &"walk",
+"speed": 10.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ywf6o"]
+size = Vector2(14, 30)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_x31by"]
+size = Vector2(14, 30)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fidix"]
+size = Vector2(14, 30)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_w8ded"]
+size = Vector2(16, 26)
+
+[node name="Character" type="CharacterBody2D" unique_id=1303324328]
+script = ExtResource("1_lrhn5")
+metadata/_edit_group_ = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=434270095]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_ywf6o")
+animation = &"walk"
+frame_progress = 0.04541948
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=788799816]
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_ywf6o")
+
+[node name="ClimbingDetection" type="Node2D" parent="." unique_id=1227230733]
+
+[node name="Left" type="Area2D" parent="ClimbingDetection" unique_id=567885336]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ClimbingDetection/Left" unique_id=1846144472]
+position = Vector2(-8, 1)
+shape = SubResource("RectangleShape2D_x31by")
+debug_color = Color(0.6571685, 0.5165659, 5.7756904e-07, 0.41960785)
+
+[node name="Right" type="Area2D" parent="ClimbingDetection" unique_id=2142659070]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ClimbingDetection/Right" unique_id=1955594066]
+position = Vector2(8, 1)
+shape = SubResource("RectangleShape2D_fidix")
+debug_color = Color(0.5427229, 0.5669151, 3.85046e-07, 0.41960785)
+
+[node name="Up" type="Area2D" parent="ClimbingDetection" unique_id=91037656]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ClimbingDetection/Up" unique_id=955980139]
+position = Vector2(0, -8)
+shape = SubResource("RectangleShape2D_w8ded")
+debug_color = Color(0.4853068, 0.5862665, 0, 0.41960785)
+
+[connection signal="area_entered" from="ClimbingDetection/Right" to="." method="_on_right_area_entered"]
+[connection signal="body_entered" from="ClimbingDetection/Right" to="." method="_on_right_body_entered"]
+[connection signal="body_exited" from="ClimbingDetection/Right" to="." method="_on_right_body_exited"]
