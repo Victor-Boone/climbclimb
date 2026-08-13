@@ -1,85 +1,56 @@
-[gd_scene format=3 uid="uid://co2lpok3jfury"]
+[gd_scene format=4 uid="uid://co2lpok3jfury"]
 
-[ext_resource type="PackedScene" uid="uid://bnu18m4tyakyj" path="res://scenes/wall.tscn" id="1_o5qli"]
-[ext_resource type="PackedScene" uid="uid://n0i7w0n7vtf2" path="res://scenes/block.tscn" id="1_sugp2"]
 [ext_resource type="PackedScene" uid="uid://8lvlgq2mjbam" path="res://scenes/slimecat.tscn" id="2_0wfyh"]
+[ext_resource type="Texture2D" uid="uid://diwr3u4073eyu" path="res://assets/dirtyground.png" id="2_sugp2"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jyhfs"]
+texture = ExtResource("2_sugp2")
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+1:0/0 = 0
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+2:0/0 = 0
+2:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, 4, 8, 4, -4, -8, -4)
+3:0/0 = 0
+3:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+0:1/0 = 0
+0:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, -4, -8, -4, 8, -8, 8)
+1:1/0 = 0
+2:1/0 = 0
+2:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(4, -8, 4, 8, 8, 8, 8, -8)
+3:1/0 = 0
+3:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+0:2/0 = 0
+0:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-4, -8, -4, 4, 8, 4, 8, 8, -8, 8, -8, -8)
+1:2/0 = 0
+1:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 4, 8, 4, 8, 8, -8, 8)
+2:2/0 = 0
+2:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 4, 4, 4, 4, -8, 8, -8, 8, 8, -8, 8, -8, 4)
+3:2/0 = 0
+3:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, -8, 8, 8, 8, 8, -8)
+0:3/0 = 0
+0:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, -8, -8, 8, -8, 8, 8, -8, 8, -8, -4)
+1:3/0 = 0
+1:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8, -8, -8)
+2:3/0 = 0
+2:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+3:3/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_7fqpk"]
+physics_layer_0/collision_layer = 1
+sources/0 = SubResource("TileSetAtlasSource_jyhfs")
 
 [node name="Main" type="Node" unique_id=964760547]
-
-[node name="Walls" type="Node" parent="." unique_id=287473956]
-
-[node name="Wall4" parent="Walls" unique_id=1598556564 instance=ExtResource("1_o5qli")]
-position = Vector2(320, 192)
-rotation = -1.5707964
-
-[node name="Wall3" parent="Walls" unique_id=58316207 instance=ExtResource("1_o5qli")]
-position = Vector2(64, 64)
-rotation = 1.5707964
-
-[node name="Wall2" parent="Walls" unique_id=1714233893 instance=ExtResource("1_o5qli")]
-position = Vector2(64, 192)
-
-[node name="Wall" parent="Walls" unique_id=1516793943 instance=ExtResource("1_o5qli")]
-position = Vector2(192, 192)
-
-[node name="Block" parent="." unique_id=869173033 instance=ExtResource("1_sugp2")]
-position = Vector2(112, 64)
-
-[node name="Block" parent="Block" unique_id=1186230816 instance=ExtResource("1_sugp2")]
-position = Vector2(16, 16)
-
-[node name="Block" parent="Block/Block" unique_id=884408570 instance=ExtResource("1_sugp2")]
-position = Vector2(16, 0)
-
-[node name="Block" parent="Block/Block/Block" unique_id=851203056 instance=ExtResource("1_sugp2")]
-position = Vector2(0, 16)
-
-[node name="Block" parent="Block/Block/Block/Block" unique_id=1896738803 instance=ExtResource("1_sugp2")]
-position = Vector2(16, 48)
-
-[node name="Block" parent="Block/Block/Block/Block/Block" unique_id=807004255 instance=ExtResource("1_sugp2")]
-position = Vector2(16, 16)
-
-[node name="Block" parent="Block/Block/Block/Block/Block/Block" unique_id=1426569239 instance=ExtResource("1_sugp2")]
-position = Vector2(32, -32)
-
-[node name="Block" parent="Block/Block/Block/Block/Block/Block/Block" unique_id=1560683535 instance=ExtResource("1_sugp2")]
-position = Vector2(16, 0)
-
-[node name="Block" parent="Block/Block/Block/Block/Block/Block/Block/Block" unique_id=360031570 instance=ExtResource("1_sugp2")]
-position = Vector2(16, -16)
-
-[node name="Block" parent="Block/Block/Block/Block/Block/Block/Block/Block/Block" unique_id=1348275148 instance=ExtResource("1_sugp2")]
-position = Vector2(16, 0)
-
-[node name="Block" parent="Block/Block/Block/Block/Block/Block/Block/Block/Block/Block" unique_id=54394161 instance=ExtResource("1_sugp2")]
-position = Vector2(-64, 64)
-
-[node name="Block" parent="Block/Block/Block/Block/Block/Block/Block/Block/Block/Block/Block" unique_id=1310975763 instance=ExtResource("1_sugp2")]
-position = Vector2(-80, 0)
-
-[node name="Block" parent="Block/Block/Block/Block/Block/Block/Block/Block/Block/Block/Block/Block" unique_id=883714899 instance=ExtResource("1_sugp2")]
-position = Vector2(16, -16)
-
-[node name="Block2" parent="." unique_id=1658267310 instance=ExtResource("1_sugp2")]
-position = Vector2(272, 128)
-
-[node name="Block" parent="Block2" unique_id=1430827919 instance=ExtResource("1_sugp2")]
-position = Vector2(32, 16)
-
-[node name="Block" parent="Block2/Block" unique_id=1482945178 instance=ExtResource("1_sugp2")]
-position = Vector2(-16, 16)
-
-[node name="Block" parent="Block2/Block/Block" unique_id=1714519483 instance=ExtResource("1_sugp2")]
-position = Vector2(-16, 16)
-
-[node name="Block3" parent="." unique_id=1892500805 instance=ExtResource("1_sugp2")]
-position = Vector2(144, 160)
-
-[node name="Block3" parent="Block3" unique_id=391455698 instance=ExtResource("1_sugp2")]
-position = Vector2(144, -16)
 
 [node name="SlimeCat" parent="." unique_id=93529822 instance=ExtResource("2_0wfyh")]
 position = Vector2(83, -265)
 STANDING_STRENGTH = 4.151
 IDEAL_ANGLE_SPEED = 1.21
+
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1817764294]
+tile_map_data = PackedByteArray("AAAGAAwAAAABAAAAAAARAAwAAAABAAAAAAAHAAwAAAABAAAAAAAIAAwAAAABAAAAAAAJAAwAAAABAAAAAAAKAAwAAAABAAAAAAALAAwAAAABAAAAAAAMAAwAAAABAAAAAAANAAwAAAABAAAAAAAOAAwAAAABAAAAAAAPAAwAAAABAAAAAAAQAAwAAAABAAAAAAAFAAwAAAABAAAAAAAEAAwAAAABAAAAAAADAAwAAAABAAAAAAABAAwAAAABAAAAAAAAAAwAAAABAAAAAAASAAwAAAABAAAAAAATAAwAAAABAAAAAAAUAAwAAAABAAAAAAAVAAwAAAABAAAAAAAAAAsAAAACAAEAAAAAAAoAAAACAAEAAAAAAAkAAAACAAEAAAAAAAgAAAACAAEAAAAAAAcAAAACAAEAAAAAAAYAAAACAAEAAAAAAAUAAAACAAEAAAAAAAQAAAACAAEAAAAVAAsAAAAAAAEAAAAVAAoAAAAAAAEAAAAVAAkAAAAAAAEAAAAVAAgAAAAAAAEAAAAVAAcAAAAAAAEAAAAVAAYAAAAAAAEAAAAVAAUAAAAAAAEAAAAVAAQAAAAAAAEAAAAAAA0AAAABAAEAAAABAA0AAAABAAEAAAACAA0AAAABAAEAAAADAA0AAAABAAEAAAAEAA0AAAABAAEAAAAFAA0AAAABAAEAAAAGAA4AAAABAAEAAAAHAA4AAAABAAEAAAAIAA4AAAABAAEAAAAJAA4AAAABAAEAAAAKAA4AAAABAAEAAAALAA4AAAABAAEAAAAMAA4AAAABAAEAAAANAA4AAAABAAEAAAAOAA4AAAABAAEAAAAPAA4AAAABAAEAAAAQAA4AAAABAAEAAAARAA0AAAABAAEAAAASAA0AAAABAAEAAAATAA0AAAABAAEAAAAUAA0AAAABAAEAAAAVAA0AAAABAAEAAAAVAA4AAAABAAEAAAAUAA4AAAABAAEAAAATAA4AAAABAAEAAAASAA4AAAABAAEAAAARAA4AAAABAAEAAAAQAA0AAAABAAEAAAAPAA0AAAABAAEAAAAOAA0AAAABAAEAAAANAA0AAAABAAEAAAAMAA0AAAABAAEAAAALAA0AAAABAAEAAAAKAA0AAAABAAEAAAAJAA0AAAABAAEAAAAIAA0AAAABAAEAAAAHAA0AAAABAAEAAAAGAA0AAAABAAEAAAAFAA4AAAABAAEAAAAEAA4AAAABAAEAAAADAA4AAAABAAEAAAACAA4AAAABAAEAAAABAA4AAAABAAEAAAAAAA4AAAABAAEAAAACAAwAAAABAAAAAAAWAAwAAAABAAAAAAAWAA0AAAABAAEAAAAWAA4AAAABAAEAAAAWAAsAAAABAAEAAAAWAAoAAAABAAEAAAAWAAkAAAABAAEAAAAWAAgAAAABAAEAAAAWAAcAAAABAAEAAAAWAAYAAAABAAEAAAAWAAUAAAABAAEAAAAWAAQAAAABAAEAAAAOAAgAAAABAAMAAAAPAAgAAAABAAMAAAAQAAgAAAABAAMAAAARAAgAAAABAAMAAAASAAgAAAACAAMAAAANAAgAAAAAAAMAAAABAAsAAAABAAMAAAACAAsAAAABAAMAAAADAAsAAAABAAMAAAAEAAsAAAABAAMAAAAFAAsAAAABAAMAAAAGAAsAAAABAAMAAAAHAAsAAAACAAMAAAAAAAIAAAACAAEAAAAAAAEAAAACAAEAAAAAAAAAAAACAAEAAAAAAAMAAAACAAEAAAAAAP//AAACAAEAAAAVAAMAAAAAAAEAAAAVAAIAAAAAAAEAAAAVAAEAAAAAAAEAAAAVAAAAAAAAAAEAAAAVAP//AAAAAAEAAAAVAP7/AAAAAAEAAAAWAP//AAABAAEAAAAWAAAAAAABAAEAAAAWAAEAAAABAAEAAAAWAAIAAAABAAEAAAAWAAMAAAABAAEAAAA=")
+tile_set = SubResource("TileSet_7fqpk")
+
+[node name="TileMapLayer" type="TileMapLayer" parent="TileMapLayer" unique_id=1841525301]
+tile_map_data = PackedByteArray("AAAGAAwAAAABAAAAAAARAAwAAAABAAAAAAAHAAwAAAABAAAAAAAIAAwAAAABAAAAAAAJAAwAAAABAAAAAAAKAAwAAAABAAAAAAALAAwAAAABAAAAAAAMAAwAAAABAAAAAAANAAwAAAABAAAAAAAOAAwAAAABAAAAAAAPAAwAAAABAAAAAAAQAAwAAAABAAAAAAAFAAwAAAABAAAAAAAEAAwAAAABAAAAAAADAAwAAAABAAAAAAABAAwAAAABAAAAAAAAAAwAAAABAAAAAAASAAwAAAABAAAAAAATAAwAAAABAAAAAAAUAAwAAAABAAAAAAAVAAwAAAABAAAAAAAAAAsAAAACAAEAAAAAAAoAAAACAAEAAAAAAAkAAAACAAEAAAAAAAgAAAACAAEAAAAAAAcAAAACAAEAAAAAAAYAAAACAAEAAAAAAAUAAAACAAEAAAAAAAQAAAACAAEAAAAVAAsAAAAAAAEAAAAVAAoAAAAAAAEAAAAVAAkAAAAAAAEAAAAVAAgAAAAAAAEAAAAVAAcAAAAAAAEAAAAVAAYAAAAAAAEAAAAVAAUAAAAAAAEAAAAVAAQAAAAAAAEAAAAAAA0AAAABAAEAAAABAA0AAAABAAEAAAACAA0AAAABAAEAAAADAA0AAAABAAEAAAAEAA0AAAABAAEAAAAFAA0AAAABAAEAAAAGAA4AAAABAAEAAAAHAA4AAAABAAEAAAAIAA4AAAABAAEAAAAJAA4AAAABAAEAAAAKAA4AAAABAAEAAAALAA4AAAABAAEAAAAMAA4AAAABAAEAAAANAA4AAAABAAEAAAAOAA4AAAABAAEAAAAPAA4AAAABAAEAAAAQAA4AAAABAAEAAAARAA0AAAABAAEAAAASAA0AAAABAAEAAAATAA0AAAABAAEAAAAUAA0AAAABAAEAAAAVAA0AAAABAAEAAAAVAA4AAAABAAEAAAAUAA4AAAABAAEAAAATAA4AAAABAAEAAAASAA4AAAABAAEAAAARAA4AAAABAAEAAAAQAA0AAAABAAEAAAAPAA0AAAABAAEAAAAOAA0AAAABAAEAAAANAA0AAAABAAEAAAAMAA0AAAABAAEAAAALAA0AAAABAAEAAAAKAA0AAAABAAEAAAAJAA0AAAABAAEAAAAIAA0AAAABAAEAAAAHAA0AAAABAAEAAAAGAA0AAAABAAEAAAAFAA4AAAABAAEAAAAEAA4AAAABAAEAAAADAA4AAAABAAEAAAACAA4AAAABAAEAAAABAA4AAAABAAEAAAAAAA4AAAABAAEAAAACAAwAAAABAAAAAAAWAAwAAAABAAAAAAAWAA0AAAABAAEAAAAWAA4AAAABAAEAAAAWAAsAAAABAAEAAAAWAAoAAAABAAEAAAAWAAkAAAABAAEAAAAWAAgAAAABAAEAAAAWAAcAAAABAAEAAAAWAAYAAAABAAEAAAAWAAUAAAABAAEAAAAWAAQAAAABAAEAAAAOAAgAAAABAAMAAAAPAAgAAAABAAMAAAAQAAgAAAABAAMAAAARAAgAAAABAAMAAAASAAgAAAACAAMAAAANAAgAAAAAAAMAAAABAAsAAAABAAMAAAACAAsAAAABAAMAAAADAAsAAAABAAMAAAAEAAsAAAABAAMAAAAFAAsAAAABAAMAAAAGAAsAAAABAAMAAAAHAAsAAAACAAMAAAAAAAIAAAACAAEAAAAAAAEAAAACAAEAAAAAAAAAAAACAAEAAAAAAAMAAAACAAEAAAAAAP//AAACAAEAAAAVAAMAAAAAAAEAAAAVAAIAAAAAAAEAAAAVAAEAAAAAAAEAAAAVAAAAAAAAAAEAAAAVAP//AAAAAAEAAAAVAP7/AAAAAAEAAAAWAP//AAABAAEAAAAWAAAAAAABAAEAAAAWAAEAAAABAAEAAAAWAAIAAAABAAEAAAAWAAMAAAABAAEAAAA=")
+tile_set = SubResource("TileSet_7fqpk")
