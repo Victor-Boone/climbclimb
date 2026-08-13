@@ -1,12 +1,15 @@
 [gd_scene format=3 uid="uid://vdouacd08aj8"]
 
-[ext_resource type="Script" uid="uid://c6k7xkmxmvhhg" path="res://scenes/climbing_line.gd" id="1_rqfwk"]
+[ext_resource type="Script" uid="uid://c6k7xkmxmvhhg" path="res://scripts/climbing_line.gd" id="1_rqfwk"]
 
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_7fqpk"]
 b = Vector2(0, -32)
 
 [node name="ClimbingLine" type="Area2D" unique_id=1658734152]
+collision_layer = 2
+collision_mask = 2
 script = ExtResource("1_rqfwk")
+MATERIAL = null
 metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1792796184]

@@ -174,12 +174,25 @@ func _head_butt_interaction(delta: float) -> void:
 func _update_grip_area() -> void:
 	var grip_center = 0.25 * $Butt.position + 0.75 * $Head.position
 	$GripArea.position = grip_center
+
+func _DEBUG_display_grip_points() -> void:
+	"""
+	Display best grip points per grippable object around.
+	Must be called after _update_grip_area().
+	"""
 	var collisions = $GripArea.get_overlapping_areas()
-	print(collisions)
-	for area in collisions:
-		var tip: Vector2 = area.get_tip()
-		var end: Vector2 = area.get_end()
-		print("Got a line ", tip, " to ", end)
+	var global_center = global_position + $GripArea.position
+	var radius = $GripArea/CollisionShape2D.get_shape().get_radius()
+	# print()
+	# print("Global center:", global_center)
+	$DebugLine.clear_points()
+	# $DebugLine.add_point($GripArea.position)
+	# print("Center:", global_center)
+	for object in collisions:
+		var d = object.point_score_wrt(global_center, 1.1*radius, Vector2(0,-1))
+		if d["score"] != -INF:
+			var point: Vector2 = d["point"] - global_position
+			$DebugLine.add_point(point)
 
 
 # External Physics
@@ -222,6 +235,7 @@ func _physics_process(delta: float) -> void:
 	rotate_head()
 	flip_head()
 	_update_grip_area()
+	_DEBUG_display_grip_points()
 	
 	# Debug
 	$Butt._update_velocity_vector()

@@ -47,10 +47,13 @@ b = Vector2(0, -192)
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_sugp2"]
 b = Vector2(0, -192)
 
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_tbgi4"]
+b = Vector2(48, 0)
+
 [node name="Main" type="Node" unique_id=964760547]
 
 [node name="SlimeCat" parent="." unique_id=93529822 instance=ExtResource("2_0wfyh")]
-position = Vector2(128, 80)
+position = Vector2(144, 176)
 STANDING_STRENGTH = 4.151
 IDEAL_ANGLE_SPEED = 1.21
 
@@ -64,8 +67,7 @@ tile_set = SubResource("TileSet_7fqpk")
 
 [node name="ClimbingLine" parent="." unique_id=1083152272 instance=ExtResource("3_sugp2")]
 position = Vector2(160, 192)
-collision_layer = 2
-collision_mask = 2
+MATERIAL = 1.0
 
 [node name="CollisionShape2D" parent="ClimbingLine" index="0" unique_id=1792796184]
 shape = SubResource("SegmentShape2D_jyhfs")
@@ -75,8 +77,7 @@ points = PackedVector2Array(0, -192, 0, 0)
 
 [node name="ClimbingLine2" parent="." unique_id=195965567 instance=ExtResource("3_sugp2")]
 position = Vector2(336, 192)
-collision_layer = 2
-collision_mask = 2
+MATERIAL = 1.0
 
 [node name="CollisionShape2D" parent="ClimbingLine2" index="0" unique_id=1792796184]
 shape = SubResource("SegmentShape2D_sugp2")
@@ -84,5 +85,15 @@ shape = SubResource("SegmentShape2D_sugp2")
 [node name="Line2D" parent="ClimbingLine2" index="1" unique_id=603407403]
 points = PackedVector2Array(0, -192, 0, 0)
 
+[node name="ClimbingLine3" parent="." unique_id=1658734152 instance=ExtResource("3_sugp2")]
+position = Vector2(160, 164)
+
+[node name="CollisionShape2D" parent="ClimbingLine3" index="0" unique_id=1792796184]
+shape = SubResource("SegmentShape2D_tbgi4")
+
+[node name="Line2D" parent="ClimbingLine3" index="1" unique_id=603407403]
+points = PackedVector2Array(0, 0, 48, 0)
+
 [editable path="ClimbingLine"]
 [editable path="ClimbingLine2"]
+[editable path="ClimbingLine3"]
