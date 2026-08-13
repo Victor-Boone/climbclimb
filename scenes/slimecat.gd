@@ -23,10 +23,6 @@ func _ready() -> void:
 	pass # Replace with function body.
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-
 func clip(x: float, inf: float, sup: float) -> float:
 	return min(sup, max(x, inf))
 func mod_2PI(angle: float) -> float:
@@ -83,6 +79,7 @@ func movement_manager() -> void:
 	else: 
 		state = State.IDLE
 	# state = State.STUN
+	
 
 func _apply_gravity(delta: float) -> void:
 	""" Apply gravity to Butt and Head. """
@@ -92,22 +89,7 @@ func _apply_gravity(delta: float) -> void:
 	if not $Head.is_on_floor():
 		var head_gravity = GRAVITY_SCALING * $Head.get_gravity()
 		$Head.velocity += head_gravity * delta
-
-
-func _apply_ground_friction(delta) -> void:
-	""" Apply heavy ground friction (when floor) to 
-	- Butt if not direction in input;
-	- Head in all cases. """
-	var direction: float = Input.get_axis("move_left", "move_right")
-	if $Head.is_on_floor():
-		pass # $Head.velocity.x = 0.0
-	if $Butt.is_on_floor() and state != State.WALK and state != State.STUN:
-		$Butt.velocity.x = move_toward(
-			$Butt.velocity.x, 
-			0.0,
-			WALK_SPEED * pow(1.0 - GROUND_FRICTION, delta)
-		)
-
+		
 
 func _correct_velocity(delta: float) -> void:
 	""" Pole correction. """
@@ -156,7 +138,6 @@ func _correct_velocity(delta: float) -> void:
 
 func _apply_velocity(delta) -> void:
 	""" Move Butt and Head. """
-	# Butt movement
 	$Butt.move_and_bounce(delta)
 	$Head.move_and_bounce(delta)
 
@@ -168,7 +149,6 @@ func _apply_air_friction(delta) -> void:
 func _physics_process(delta: float) -> void:
 	movement_manager()
 	_correct_velocity(delta)
-	# _apply_ground_friction(delta)
 	# _apply_air_friction(delta)
 	_apply_gravity(delta)
 	_apply_velocity(delta)
