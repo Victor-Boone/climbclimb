@@ -53,12 +53,22 @@ func is_standing()      -> bool: return abs(body_angle() - STILL_ANGLE) < 0.25 *
 
 
 # Visual-related functions
+
 func rotate_head() -> void:
 	""" Rotate the face relatively to the body angle. """
 	var p_butt: Vector2 = $Butt.position
 	var p_head: Vector2 = $Head.position
 	var angle: float = (p_butt - p_head).angle()
 	$Head.rotation = angle - PI/2
+
+
+func flip_head() -> void:
+	""" Flip the heat relatively to the facing direction. """
+	var direction: float = Input.get_axis("move_left", "move_right")
+	if direction > 0.0:
+		$Head/Sprite2D.flip_h = false
+	if direction < 0.0:
+		$Head/Sprite2D.flip_h = true
 
 
 # Player input
@@ -195,6 +205,7 @@ func _physics_process(delta: float) -> void:
 	
 	# Visuals
 	rotate_head()
+	flip_head()
 	
 	# Debug
 	$Butt._update_velocity_vector()
