@@ -2,85 +2,48 @@
 
 [ext_resource type="Texture2D" uid="uid://b1lqren0g04sp" path="res://assets/character/circle.png" id="1_hgux6"]
 [ext_resource type="Script" uid="uid://ccxcgl6dgrpnp" path="res://scenes/slimecat.gd" id="1_tsbn0"]
-[ext_resource type="Script" uid="uid://x3mkfu1v3aes" path="res://scenes/slimecat_butt.gd" id="2_y867b"]
 [ext_resource type="Texture2D" uid="uid://ccx6ypgdttutr" path="res://assets/character/head.png" id="3_dr1d1"]
+[ext_resource type="PackedScene" uid="uid://dl5saaqvqjjak" path="res://scenes/bodypart.tscn" id="4_mgm2w"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_x31by"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_6tant"]
 radius = 6.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_7fqpk"]
-radius = 5.0
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_ywf6o"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_y867b"]
 radius = 8.0
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_fidix"]
-radius = 5.0
 
 [node name="SlimeCat" type="Node2D" unique_id=93529822]
 script = ExtResource("1_tsbn0")
 STANDING_STRENGTH = 2.7039999999999997
 IDEAL_ANGLE_SPEED = 0.454
 
-[node name="Butt" type="CharacterBody2D" parent="." unique_id=1988084563]
-collision_layer = 0
-script = ExtResource("2_y867b")
-metadata/_edit_group_ = true
+[node name="Butt" parent="." unique_id=2109655211 instance=ExtResource("4_mgm2w")]
 
-[node name="Sprite2D" type="Sprite2D" parent="Butt" unique_id=1914794815]
+[node name="Sprite2D" parent="Butt" index="0" unique_id=1858372290]
 modulate = Color(1, 0, 0, 1)
 texture = ExtResource("1_hgux6")
 
-[node name="OuterCollisionShape" type="CollisionShape2D" parent="Butt" unique_id=1193407952]
-shape = SubResource("CircleShape2D_x31by")
-debug_color = Color(0.9584257, 3.080368e-06, 0.5298511, 0.41960785)
+[node name="CollisionShape2D" parent="Butt" index="1" unique_id=1815520425]
+shape = SubResource("CircleShape2D_6tant")
 
-[node name="InnerCollisionShape" type="CollisionShape2D" parent="Butt" unique_id=1215779423]
-shape = SubResource("CircleShape2D_7fqpk")
-debug_color = Color(0.9490196, 0, 0.57254905, 0.80784315)
-
-[node name="Line2D" type="Line2D" parent="Butt" unique_id=366389884]
-points = PackedVector2Array(0, 0, 29, 0)
-width = 1.0
+[node name="Line2D" parent="Butt/DebugVector" parent_id_path=PackedInt32Array(2109655211, 1881324333) index="0" unique_id=150826118]
+z_index = 1
+points = PackedVector2Array(0, 0, 7, 7)
 default_color = Color(1, 1, 0, 1)
 
-[node name="Label" type="Label" parent="Butt" unique_id=1748916279]
+[node name="Label" parent="Butt/DebugVector" parent_id_path=PackedInt32Array(2109655211, 1881324333) index="1" unique_id=972210885]
 z_index = 1
-offset_left = 11.0
-offset_top = -13.0
-offset_right = 51.0
-offset_bottom = 10.0
-text = "021"
 
-[node name="DownRay" type="RayCast2D" parent="Butt" unique_id=1515764911]
+[node name="Head" parent="." unique_id=1432764235 instance=ExtResource("4_mgm2w")]
+position = Vector2(7, -22)
 
-[node name="Head" type="CharacterBody2D" parent="." unique_id=650696065]
-position = Vector2(4, 18)
-collision_layer = 0
-script = ExtResource("2_y867b")
-metadata/_edit_group_ = true
-
-[node name="Sprite2D" type="Sprite2D" parent="Head" unique_id=262519679]
+[node name="Sprite2D" parent="Head" index="0" unique_id=1858372290]
 texture = ExtResource("3_dr1d1")
 
-[node name="OuterCollisionShape" type="CollisionShape2D" parent="Head" unique_id=736204305]
-shape = SubResource("CircleShape2D_ywf6o")
+[node name="CollisionShape2D" parent="Head" index="1" unique_id=1815520425]
+shape = SubResource("CircleShape2D_y867b")
 
-[node name="InnerCollisionShape" type="CollisionShape2D" parent="Head" unique_id=1442155783]
-shape = SubResource("CircleShape2D_fidix")
-debug_color = Color(0, 0.6, 0.69803923, 0.6784314)
+[node name="Line2D" parent="Head/DebugVector" parent_id_path=PackedInt32Array(1432764235, 1881324333) index="0" unique_id=150826118]
+points = PackedVector2Array(0, 0, 9, 7)
 
-[node name="Line2D" type="Line2D" parent="Head" unique_id=1988999073]
-points = PackedVector2Array(0, 0, 1, 0)
-width = 1.0
-default_color = Color(0, 0, 1, 1)
-
-[node name="Label" type="Label" parent="Head" unique_id=333614211]
-z_index = 1
-offset_left = 11.0
-offset_top = -12.0
-offset_right = 51.0
-offset_bottom = 11.0
-text = "012"
-
-[node name="DownRay" type="RayCast2D" parent="Head" unique_id=1349982969]
+[editable path="Butt"]
+[editable path="Head"]

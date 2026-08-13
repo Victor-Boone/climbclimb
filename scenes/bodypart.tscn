@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://dl5saaqvqjjak"]
+
+[ext_resource type="Script" uid="uid://c7gpjpqq324cs" path="res://scenes/bodypart.gd" id="1_6tant"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ywf6o"]
+radius = 10.440307
+
+[node name="BodyPart" type="CharacterBody2D" unique_id=2109655211]
+collision_layer = 0
+script = ExtResource("1_6tant")
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1858372290]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1815520425]
+shape = SubResource("CircleShape2D_ywf6o")
+
+[node name="DownRay" type="RayCast2D" parent="." unique_id=1916091450]
+
+[node name="DebugVector" type="Node2D" parent="." unique_id=1881324333]
+
+[node name="Line2D" type="Line2D" parent="DebugVector" unique_id=150826118]
+points = PackedVector2Array(0, 0, 10, 0)
+width = 1.0
+
+[node name="Label" type="Label" parent="DebugVector" unique_id=972210885]
+offset_left = 11.0
+offset_top = -12.0
+offset_right = 51.0
+offset_bottom = 11.0
+text = "012"
