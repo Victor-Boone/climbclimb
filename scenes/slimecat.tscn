@@ -17,6 +17,8 @@ STANDING_STRENGTH = 2.7039999999999997
 IDEAL_ANGLE_SPEED = 0.454
 
 [node name="Butt" parent="." unique_id=2109655211 instance=ExtResource("4_mgm2w")]
+BOUNCE_FACTOR_X = 0.6
+BOUNCE_FACTOR_Y = 0.5
 
 [node name="Sprite2D" parent="Butt" index="0" unique_id=1858372290]
 modulate = Color(1, 0, 0, 1)
@@ -35,6 +37,8 @@ z_index = 1
 
 [node name="Head" parent="." unique_id=1432764235 instance=ExtResource("4_mgm2w")]
 position = Vector2(7, -22)
+BOUNCE_FACTOR_X = 0.6
+BOUNCE_FACTOR_Y = 0.5
 
 [node name="Sprite2D" parent="Head" index="0" unique_id=1858372290]
 texture = ExtResource("3_dr1d1")

@@ -8,6 +8,10 @@ A Body Part.
    must be managed by strings/poles or other mechanisms. 
 """
 
+@export_range(0.0, 1.0) var BOUNCE_FACTOR_X: float = 1.0
+@export_range(0.0, 1.0) var BOUNCE_FACTOR_Y: float = 1.0
+const MAX_BOUNCE_STEPS: int = 5
+
 func get_radius() -> float:
 	return $CollisionShape2D.get_shape().get_radius()
 
@@ -21,3 +25,24 @@ func set_label_color(color: Color) -> void:
 func _update_velocity_vector() -> void:
 	$DebugVector/Line2D.set_point_position(1, 0.3 * velocity)
 	$DebugVector/Label.text = str(int(velocity.length()))
+
+func move_and_bounce(delta: float):
+	"""
+	Move and bounce the bodypart around.
+	
+	- On collision, the bodypart bounces with respect to the normal of the 
+	  collided object. 
+	"""
+	var butt_budget: float = delta
+	for step in range(MAX_BOUNCE_STEPS):
+		var p_init = position
+		var butt_collision = move_and_collide(velocity * butt_budget)
+		var dp = position - p_init
+		var dt = dp.length() / velocity.length() 
+		butt_budget -= dt
+		if butt_collision:
+			# TODO: retrieve the bouncing attributes of the material 
+			velocity = velocity.bounce(butt_collision.get_normal())
+			velocity.x *= BOUNCE_FACTOR_X
+			velocity.y *= BOUNCE_FACTOR_Y
+		if butt_budget < 1e-5: break

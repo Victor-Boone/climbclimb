@@ -9,8 +9,6 @@ extends Node2D
 @export_range(0.0, 1.0) var GRAVITY_SCALING : float = 1.0
 @export var AIR_FRICTION: float = 0.0
 @export var GROUND_FRICTION: float = 0.99
-@export_range(0.0, 1.0) var BOUNCE_FACTOR_X: float = 0.6
-@export_range(0.0, 1.0) var BOUNCE_FACTOR_Y: float = 0.5
 @export_range(0.0, 10.0) var STANDING_STRENGTH: float = 25.0
 @export_range(0.0, 10.0) var IDEAL_ANGLE_SPEED: float = 2.0
 const STILL_ANGLE = 1.5 * PI
@@ -159,39 +157,8 @@ func _correct_velocity(delta: float) -> void:
 func _apply_velocity(delta) -> void:
 	""" Move Butt and Head. """
 	# Butt movement
-	var butt_budget: float = delta
-	for step in range(5):
-		var p_init = $Butt.position
-		var butt_collision = $Butt.move_and_collide($Butt.velocity * butt_budget)
-		var dp = $Butt.position - p_init
-		var dt = dp.length() / $Butt.velocity.length() 
-		butt_budget -= dt
-		if butt_collision:
-			$Butt.velocity = $Butt.velocity.bounce(butt_collision.get_normal())
-			$Butt.velocity.x *= BOUNCE_FACTOR_X
-			$Butt.velocity.y *= BOUNCE_FACTOR_Y
-		if butt_budget < 1e-5: break
-	
-	#if true: # not $Butt.is_on_floor() and abs($Butt.velocity.y) > 50.0:
-		#$Butt.set_label_color(Color.GREEN)
-		#var butt_collision = $Butt.move_and_collide($Butt.velocity * delta)
-		#if butt_collision:
-			#$Butt.velocity = BOUNCE_FACTOR * $Butt.velocity.bounce(butt_collision.get_normal())
-	#else:
-		#$Butt.set_label_color(Color.WHITE)
-		#$Butt.move_and_slide()
-		#
-	# Head movement
-	# if not $Head.is_on_floor() and $Head.velocity.length() > 50.0:
-	if true: # not $Head.is_on_wall() and $Head.velocity.length() > 50.0:
-		$Head.set_label_color(Color.GREEN)
-		var head_collision = $Head.move_and_collide($Head.velocity * delta)
-		if head_collision:
-			# print("Head collided with ", head_collision.get_collider().name)
-			$Head.velocity = BOUNCE_FACTOR_Y * $Head.velocity.bounce(head_collision.get_normal())
-	else:
-		$Head.set_label_color(Color.WHITE)
-		$Head.move_and_slide()
+	$Butt.move_and_bounce(delta)
+	$Head.move_and_bounce(delta)
 
 
 func _apply_air_friction(delta) -> void:
@@ -201,7 +168,7 @@ func _apply_air_friction(delta) -> void:
 func _physics_process(delta: float) -> void:
 	movement_manager()
 	_correct_velocity(delta)
-	_apply_ground_friction(delta)
+	# _apply_ground_friction(delta)
 	# _apply_air_friction(delta)
 	_apply_gravity(delta)
 	_apply_velocity(delta)
