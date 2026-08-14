@@ -13,8 +13,9 @@ radius = 6.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_y867b"]
 radius = 8.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_ywf6o"]
-radius = 16.0
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_tipki"]
+radius = 14.0
+height = 28.0
 
 [node name="SlimeCat" type="Node2D" unique_id=93529822]
 script = ExtResource("1_tsbn0")
@@ -55,12 +56,14 @@ shape = SubResource("CircleShape2D_y867b")
 points = PackedVector2Array(0, 0, 9, 7)
 
 [node name="GripArea" type="Area2D" parent="." unique_id=994708991]
+position = Vector2(0, -17)
 collision_layer = 2
 collision_mask = 2
 metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GripArea" unique_id=1553657292]
-shape = SubResource("CircleShape2D_ywf6o")
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_tipki")
 debug_color = Color(1, 1, 0, 0.09019608)
 
 [node name="DebugLine" type="Line2D" parent="GripArea" unique_id=157184533]

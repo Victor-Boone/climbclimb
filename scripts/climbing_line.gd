@@ -84,5 +84,20 @@ func point_score_wrt(center: Vector2, radius: float, direction: Vector2) -> Dict
 			best_point = point
 			best_score = score
 	return {"point": best_point, "score": best_score}
-	
+
+
+func grippable_points_wrt(center: Vector2, radius: float, direction: Vector2) -> Array[Vector2]:
+	"""
+	Given the GripArea circle centered at 'center' with radius 'radius', and
+	given that the player's input direction 'direction', return an array of the
+	potentially promising grippable points (in global coordinates).
+	"""
+	var tip: Vector2 = get_tip()
+	var end: Vector2 = get_end()
+	var inter = Geometry2D.segment_intersects_segment(tip, end, center - radius * direction, center + radius * direction)
+	var points = circle_segment_intersection(center, radius)
+	if Geometry2D.is_point_in_circle(tip, center, radius): points.push_back(tip)
+	if Geometry2D.is_point_in_circle(end, center, radius): points.push_back(end)
+	if inter != null and Geometry2D.is_point_in_circle(inter, center, radius): points.push_back(inter)
+	return points
 	

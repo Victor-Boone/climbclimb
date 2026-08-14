@@ -9,7 +9,6 @@ b = Vector2(0, -32)
 collision_layer = 2
 collision_mask = 2
 script = ExtResource("1_rqfwk")
-MATERIAL = null
 metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1792796184]
