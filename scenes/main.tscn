@@ -72,6 +72,7 @@ b = Vector2(-48, 0)
 
 [node name="SlimeCat" parent="." unique_id=93529822 instance=ExtResource("2_0wfyh")]
 position = Vector2(237, 49)
+DEBUG_SHOW_CLIMBING_POINTS = true
 STANDING_STRENGTH = 4.151
 IDEAL_ANGLE_SPEED = 1.21
 

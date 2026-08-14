@@ -2,6 +2,7 @@ extends Node2D
 const Utils = preload("res://scripts/utils.gd")
 
 @export var FLY_MODE: bool = false
+@export var DEBUG_SHOW_CLIMBING_POINTS: bool = false
 var throw_timer: float = 0.0
 @export var THROW_DELAY: float = 0.15
 
@@ -33,8 +34,8 @@ var throw_timer: float = 0.0
 @export var HEADBUTT_DISTANCE: float = 13.0
 @export var BODY_STIFFNESS: float = 12.0
 @export var HEADBODYRATIO: float = 0.5 
-@export_range(0.0, 10.0) var STANDING_STRENGTH: float = 25.0 
-@export_range(0.0, 10.0) var IDEAL_ANGLE_SPEED: float = 2.0
+@export_range(0.0, 10.0) var STANDING_STRENGTH: float = 4.15
+@export_range(0.0, 10.0) var IDEAL_ANGLE_SPEED: float = 1.20
 const STILL_ANGLE = 1.5 * PI
 
 # State automaton 
@@ -100,7 +101,7 @@ func movement_manager() -> void:
 	var x_direction: float = Input.get_axis("move_left", "move_right")
 	var v_butt = $Butt.velocity
 	var v_head = $Head.velocity
-	if is_climbing():
+	if is_gripped():
 		if Input.is_action_just_pressed("jump") and is_gripped():
 			state = State.IDLE
 			var dir: Vector2 = Vector2(x_direction, -2.0).normalized()
@@ -270,7 +271,9 @@ func choose_grip_point(points, direction) -> Array[Vector2]:
 func climbing_manager(delta) -> void:
 	throw_timer = move_toward(throw_timer, 0.0, delta)
 	_update_grip_area()
-	_DEBUG_display_grip_points()
+	if DEBUG_SHOW_CLIMBING_POINTS: 
+		$GripArea/DebugLine.hide()
+		_DEBUG_display_grip_points()
 	var input_dir: Vector2 = get_Vector2_direction()
 	if not is_climbing() or throw_timer > 0.0:
 		hand_grip[RIGHT]["load"] = 0.0
