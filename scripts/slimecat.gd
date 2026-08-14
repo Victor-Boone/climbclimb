@@ -3,7 +3,7 @@ const Utils = preload("res://scripts/utils.gd")
 
 @export var FLY_MODE: bool = false
 var throw_timer: float = 0.0
-@export var THROW_DELAY: float = 0.3
+@export var THROW_DELAY: float = 0.15
 
 # Movement related variables
 # - WALK_SPEED : Top speed while walking
@@ -87,11 +87,12 @@ func get_Vector2_direction() -> Vector2:
 	var direction_x: float = Input.get_axis("move_left", "move_right")
 	var direction_y: float = Input.get_axis("move_up", "move_down")
 	var direction: Vector2 = Vector2(direction_x, direction_y)
-	var velocity: Vector2 = 0.5 * ($Head.velocity + $Butt.velocity)
-	if direction.length() > 1e-3 or is_gripped():
-		return direction
-	else:
-		return velocity 
+	return direction
+	#var velocity: Vector2 = 0.5 * ($Head.velocity + $Butt.velocity)
+	#if direction.length() > 1e-3 or is_gripped():
+		#return direction
+	#else:
+		#return velocity 
 
 
 func movement_manager() -> void:
@@ -227,12 +228,11 @@ func display_hands() -> void:
 		$LeftHand.show()
 
 
-func gripping_score_of_point(point: Vector2) -> float:
-	""" Return the gripping score of a point (relative position). """
+func gripping_score_of_point(point: Vector2, direction : Vector2) -> float:
+	""" Return the gripping score of a point wrt direction (relative position). """
 	var center: Vector2 = get_grip_area_position()
-	var direction: Vector2 = get_Vector2_direction()
-	if direction.length() < 1e-3 : 
-		return (point-center).length() # If no input pressed : favour points closest to body
+	if direction.length() < 1e-1 : 
+		return exp(-(point-center).length()) # If no input pressed : favour points closest to body
 	var align_score  = direction.dot((point - center).normalized())
 	var normal_score = abs(direction.rotated(PI/2).dot((point - center).normalized()))
 	var norm = (point - center).length()
@@ -248,19 +248,19 @@ func get_gripping_points(direction : Vector2) -> Array[Vector2]:
 	var radius: float = $GripArea/CollisionShape2D.get_shape().get_radius()
 	var points: Array[Vector2] = []
 	for object in collisions:
-		var object_points = object.grippable_points_wrt(global_center, 1.1*radius, direction)
+		var object_points = object.grippable_points_wrt(global_center, radius, direction)
 		for point in object_points:
 			points.push_back(point)
 	return points
 
 
-func choose_grip_point(points) -> Array[Vector2]:
+func choose_grip_point(points, direction) -> Array[Vector2]:
 	""" Grip a point (with available hand) """
 	var best_score = - INF
 	var best_point: Vector2 = Vector2.ZERO
 	for point in points:
 		point -= global_position
-		var score = gripping_score_of_point(point)
+		var score = gripping_score_of_point(point, direction)
 		if score >= 0.0 and score > best_score:
 			best_score = score
 			best_point = point
@@ -283,8 +283,9 @@ func climbing_manager(delta) -> void:
 			#hand_grip[RIGHT]["load"] = 0.5
 			#hand_grip[RIGHT]["point"] = grip_point
 		for hand in [LEFT, RIGHT] :
-			var points: Array[Vector2] = get_gripping_points(input_dir.rotated((2* hand - 1) * 0.1 * PI))
-			for grip_point in choose_grip_point(points): # haha HACKY
+			var rotated_input_dir : Vector2 = input_dir.rotated((2* hand - 1) * 0.01 * PI)
+			var points: Array[Vector2] = get_gripping_points(rotated_input_dir)
+			for grip_point in choose_grip_point(points, rotated_input_dir): # haha HACKY
 				hand_grip[hand]["load"] = 0.25
 				hand_grip[hand]["point"] = grip_point
 		
@@ -300,7 +301,7 @@ func climbing_manager(delta) -> void:
 			# print("[Climbing] Trying to set a new hand")
 			# if the weak hand is too weak ( < 0.01 )
 			var points: Array[Vector2] = get_gripping_points(input_dir)
-			for grip_point in choose_grip_point(points): # haha HACKY
+			for grip_point in choose_grip_point(points, input_dir): # haha HACKY
 				hand_grip[weak_hand]["load"] = 0.25
 				hand_grip[weak_hand]["point"] = grip_point
 				hand_grip[strong_hand]["load"] = 0.75

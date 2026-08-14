@@ -54,11 +54,11 @@ func grippable_points_wrt(center: Vector2, radius: float, direction: Vector2) ->
 	var sup = tip
 	var inf = end 
 	if not Geometry2D.is_point_in_circle(tip, center, radius):
-		var lambda = Geometry2D.segment_intersects_circle(tip, end, center, 1.1 * radius)
+		var lambda = Geometry2D.segment_intersects_circle(tip, end, center, radius)
 		if lambda == -1 : return []
 		sup = lambda * end + (1 - lambda) * tip
 	if not Geometry2D.is_point_in_circle(end, center, radius):
-		var lambda = Geometry2D.segment_intersects_circle(end, tip, center, 1.1 * radius)
+		var lambda = Geometry2D.segment_intersects_circle(end, tip, center, radius)
 		if lambda == -1 : return []
 		inf = lambda * tip + (1 - lambda) * end
 		
