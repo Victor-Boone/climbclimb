@@ -62,10 +62,17 @@ b = Vector2(0, -16)
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_85g3d"]
 b = Vector2(48, 0)
 
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_choun"]
+b = Vector2(0, -16)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_ya4ey"]
+b = Vector2(-48, 0)
+
 [node name="Main" type="Node" unique_id=964760547]
 
 [node name="SlimeCat" parent="." unique_id=93529822 instance=ExtResource("2_0wfyh")]
 position = Vector2(237, 49)
+FLY_MODE = true
 STANDING_STRENGTH = 4.151
 IDEAL_ANGLE_SPEED = 1.21
 
@@ -95,7 +102,7 @@ shape = SubResource("SegmentShape2D_sugp2")
 [node name="Line2D" parent="ClimbingLine2" index="1" unique_id=603407403]
 points = PackedVector2Array(0, -192, 0, 0)
 
-[node name="ClimbingLine7" parent="." unique_id=1658734152 instance=ExtResource("3_sugp2")]
+[node name="ClimbingLine7" parent="." unique_id=1406833245 instance=ExtResource("3_sugp2")]
 position = Vector2(416, 256)
 
 [node name="CollisionShape2D" parent="ClimbingLine7" index="0" unique_id=1792796184]
@@ -149,6 +156,24 @@ shape = SubResource("SegmentShape2D_85g3d")
 [node name="Line2D" parent="ClimbingLine8" index="1" unique_id=603407403]
 points = PackedVector2Array(0, 0, 48, 0)
 
+[node name="ClimbingLine9" parent="." unique_id=1658734152 instance=ExtResource("3_sugp2")]
+position = Vector2(128, 192)
+
+[node name="CollisionShape2D" parent="ClimbingLine9" index="0" unique_id=1792796184]
+shape = SubResource("SegmentShape2D_choun")
+
+[node name="Line2D" parent="ClimbingLine9" index="1" unique_id=603407403]
+points = PackedVector2Array(0, 0, 0, -16)
+
+[node name="ClimbingLine10" parent="." unique_id=1537551601 instance=ExtResource("3_sugp2")]
+position = Vector2(128, 176)
+
+[node name="CollisionShape2D" parent="ClimbingLine10" index="0" unique_id=1792796184]
+shape = SubResource("SegmentShape2D_ya4ey")
+
+[node name="Line2D" parent="ClimbingLine10" index="1" unique_id=603407403]
+points = PackedVector2Array(0, 0, -48, 0)
+
 [editable path="ClimbingLine"]
 [editable path="ClimbingLine2"]
 [editable path="ClimbingLine7"]
@@ -157,3 +182,5 @@ points = PackedVector2Array(0, 0, 48, 0)
 [editable path="ClimbingLine5"]
 [editable path="ClimbingLine6"]
 [editable path="ClimbingLine8"]
+[editable path="ClimbingLine9"]
+[editable path="ClimbingLine10"]

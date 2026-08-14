@@ -1,6 +1,8 @@
 extends Node2D
 const Utils = preload("res://scripts/utils.gd")
 
+@export var FLY_MODE: bool = false
+
 # Movement related variables
 # - WALK_SPEED : Top speed while walking
 # - AIR_SPEED : Top speed while airborn
@@ -96,7 +98,8 @@ func movement_manager() -> void:
 	var direction: float = Input.get_axis("move_left", "move_right")
 	var v_butt = $Butt.velocity
 	var v_head = $Head.velocity
-	if Input.is_action_just_pressed("jump") and is_standing() and is_on_floor(): # Jumping
+	if Input.is_action_just_pressed("jump") \
+		and ((is_standing() and is_on_floor()) or FLY_MODE): # Jumping
 		state = State.IDLE
 		$Butt.velocity.y -= JUMP_VELOCITY
 	elif direction and is_standing():
@@ -159,7 +162,7 @@ func _head_butt_interaction(delta: float) -> void:
 	# Correct theta to push it towards STANDING_ANGLE
 	if true and state != State.STUN:
 		var target_speed: float = desired_angle_speed_wrt(theta)
-		var correction: float = 0.2 if is_climbing() else 1.0
+		var correction: float = 0.33 if is_climbing() else 1.0
 		dtheta = move_toward(dtheta, target_speed, correction * STANDING_STRENGTH * delta)
 	
 	# Correct distance between head & butt
@@ -199,8 +202,9 @@ var hand_grip : Array[Dictionary] = [
 	{"load": 0.0, "point": Vector2.ZERO}
 ]
 
-func grip_area_position() -> Vector2: return 0.25 * $Butt.position + 0.75 * $Head.position
-func _update_grip_area() -> void: $GripArea.position = grip_area_position()
+func get_body_position() -> Vector2: return 0.25 * $Butt.position + 0.75 * $Head.position
+func get_grip_area_position() -> Vector2: return -.00 * $Butt.position + 1.00 * $Head.position
+func _update_grip_area() -> void: $GripArea.position = get_grip_area_position()
 func total_hand_load() -> float: return hand_grip[LEFT]["load"] + hand_grip[RIGHT]["load"]
 
 func display_hands() -> void:
@@ -216,7 +220,7 @@ func display_hands() -> void:
 
 func gripping_score_of_point(point: Vector2) -> float:
 	""" Return the gripping score of a point (relative position). """
-	var center: Vector2 = grip_area_position()
+	var center: Vector2 = get_grip_area_position()
 	var direction: Vector2 = get_Vector2_direction()
 	var align_score  = direction.dot((point - center).normalized())
 	var normal_score = abs(direction.rotated(PI/2).dot((point - center).normalized()))
@@ -269,7 +273,7 @@ func climbing_manager(delta) -> void:
 		# WARNING: RIGHT is considered the only hand gripped here
 		hand_grip[RIGHT]["load"] = move_toward(hand_grip[RIGHT]["load"], 1.0, delta * ARM_SPEED)
 	elif input_dir.length() > 1e-3:
-		var body_point: Vector2 = grip_area_position()
+		var body_point: Vector2 = get_body_position()
 		var LEFT_load: float = hand_grip[LEFT]["load"]
 		var RIGHT_load: float = hand_grip[RIGHT]["load"]
 		var weak_hand: int = LEFT if LEFT_load < RIGHT_load else RIGHT
@@ -310,12 +314,13 @@ func climbing_manager(delta) -> void:
 
 
 func _apply_gripping_traction(delta) -> void:
-	var body_point: Vector2 = grip_area_position()
-	var velocity: Vector2 = $Head.velocity
+	var body_point: Vector2 = get_body_position()
 	var body_axis = ($Head.position - $Butt.position).normalized()
 	var shoulder_axis = body_axis.rotated(-PI/2)
-	var hand = 0
+	var velocity: Vector2 = $Head.velocity
 	var new_velocity: Vector2 = Vector2.ZERO
+	var hand: float = 0 # commodity variable tracking the currently selected hand
+	var total_load: float = 0.0
 	for hand_data in hand_grip:
 		var sgn = -1.0 if hand == LEFT else +1.0
 		var shoulder_point = body_point + 3.0 * sgn * shoulder_axis
@@ -328,24 +333,21 @@ func _apply_gripping_traction(delta) -> void:
 		var hand_desired_v: Vector2 = \
 			GRIP_TRACTION * hand_load * abs(hand_vec.length() - ARM_LENGTH) * hand_dir
 		# Compute component of hand velocity on the axis of the arm (hand_dir),
-		# then correct it.
+		# then correct it. If distance to the arm is too large, the velocity
+		# is killed to 0.0, simulating the bone of the arm (that poor shoulder
+		# should not be dislocated).
 		var hd_velocity: Vector2 = velocity.dot(hand_dir) * hand_dir
-		hand_power *= 1
+		if hand_load > 0.0 and hand_vec.length() > 1.5 * ARM_LENGTH: 
+			hd_velocity = Vector2.ZERO
 		hd_velocity.x = move_toward(hd_velocity.x, hand_desired_v.x, hand_power)
 		hd_velocity.y = move_toward(hd_velocity.y, hand_desired_v.y, hand_power)
 		# Compute component of hand velocity on the normal.
 		var hn_velocity: Vector2 = velocity.dot(hand_normal) * hand_normal
 		# Recompose the vector, add half of it to new_velocity (there are two hands)
-		new_velocity += 0.5 * (hd_velocity + hn_velocity)
+		new_velocity += hand_load * (hd_velocity + hn_velocity)
+		total_load += hand_load
 		hand += 1
-	# Use the arm's strength to go towards the desired velocity
-	# Apply power in the RIGHT basis (
-	# var power: float = total_load * ARM_POWER * delta
-	# $Head.velocity.x = move_toward($Head.velocity.x, desired_v.x, power)
-	# $Head.velocity.y = move_toward($Head.velocity.y, desired_v.y, power)
-	# $Head.velocity += 20 * desired_v * delta
-	# $Head.velocity *= pow(0.01, delta)
-	$Head.velocity = new_velocity
+	$Head.velocity += total_load * (new_velocity - $Head.velocity)
 
 
 func _DEBUG_display_grip_points() -> void:
