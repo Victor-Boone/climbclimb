@@ -288,6 +288,10 @@ func climbing_manager(delta) -> void:
 			for grip_point in choose_grip_point(points, rotated_input_dir): # haha HACKY
 				hand_grip[hand]["load"] = 0.25
 				hand_grip[hand]["point"] = grip_point
+	
+	elif total_hand_load() < 0.99 : # Total load is not fully charged yet
+		for hand in [LEFT, RIGHT] :
+			hand_grip[hand]["load"] = move_toward(hand_grip[hand]["load"], 1.0, delta * ARM_SPEED * 0.5)
 		
 	elif input_dir.length() > 1e-3:
 		var body_point: Vector2 = get_body_position()
@@ -308,28 +312,28 @@ func climbing_manager(delta) -> void:
 			if hand_grip[weak_hand]["load"] != 0.25:
 				print("[WARNING] Failed to find a new grip. ")
 		else: # General case, slide hands in direction
-			var rh_direction = (hand_grip[RIGHT]["point"] - body_point) # .normalized()
-			var lh_direction = (hand_grip[LEFT ]["point"] - body_point) # .normalized()
-			var rh_score: float = rh_direction.dot(input_dir)
-			var lh_score: float = lh_direction.dot(input_dir)
-			var good_hand: int = LEFT if lh_score > rh_score else RIGHT
-			var bad_hand : int = 1 - good_hand
-			hand_grip[good_hand]["load"] = move_toward(
-				hand_grip[good_hand]["load"],
-				1.0,
-				delta * ARM_SPEED
-			)
-			if total_hand_load() > 0.99 : 
-				hand_grip[bad_hand]["load"] = move_toward(
-					hand_grip[bad_hand]["load"],
-					0.0,
+			#var rh_direction = (hand_grip[RIGHT]["point"] - body_point) # .normalized()
+			#var lh_direction = (hand_grip[LEFT ]["point"] - body_point) # .normalized()
+			var rh_score: float = gripping_score_of_point(hand_grip[RIGHT]["point"], input_dir) #rh_direction.dot(input_dir)
+			var lh_score: float = gripping_score_of_point(hand_grip[LEFT]["point"], input_dir) # lh_direction.dot(input_dir)
+			
+			var hands_close : bool = (hand_grip[RIGHT]["point"]- hand_grip[LEFT]["point"]).length() < 0.1
+			var hands_different_score : bool = abs(rh_score - lh_score) > 0.1
+			if hands_close or hands_different_score :
+				var good_hand: int = LEFT if lh_score > rh_score else RIGHT
+				var bad_hand : int = 1 - good_hand
+				hand_grip[good_hand]["load"] = move_toward(
+					hand_grip[good_hand]["load"],
+					1.0,
 					delta * ARM_SPEED
 				)
-	# Total load is not fully charged yet, and player gives no direction to chose a hand
-	# Increase load of both hands
-	elif total_hand_load() < 0.99 :
-		for hand in [LEFT, RIGHT] :
-			hand_grip[hand]["load"] = move_toward(hand_grip[hand]["load"], 1.0, delta * ARM_SPEED * 0.5)
+				if total_hand_load() > 0.99 : 
+					hand_grip[bad_hand]["load"] = move_toward(
+						hand_grip[bad_hand]["load"],
+						0.0,
+						delta * ARM_SPEED
+				)
+
 	else:
 		pass
 	# print("[RIGHT: ", hand_grip[RIGHT]["load"], "], [LEFT: ", hand_grip[LEFT]["load"], "]")
