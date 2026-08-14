@@ -2,6 +2,8 @@ extends Node2D
 const Utils = preload("res://scripts/utils.gd")
 
 @export var FLY_MODE: bool = false
+var throw_timer: float = 0.0
+@export var THROW_DELAY: float = 0.1
 
 # Movement related variables
 # - WALK_SPEED : Top speed while walking
@@ -9,7 +11,8 @@ const Utils = preload("res://scripts/utils.gd")
 # - JUMP_VELOCITY : Crude velocity set when jumping. 
 @export var WALK_SPEED: float = 90.0
 @export var AIR_SPEED: float = WALK_SPEED / 5.0
-@export var JUMP_VELOCITY: float = 500.0
+@export var GROUND_JUMP_VELOCITY: float = 500.0
+@export var CLIMB_JUMP_VELOCITY: float = 300.0
 
 # Physics related variables ( how the character is affected by physics )
 # - GRAVITY_SCALING : Beware of that force that pulls you down.
@@ -93,20 +96,26 @@ func get_Vector2_direction() -> Vector2:
 
 func movement_manager() -> void:
 	"""Manage the Player's input for movement on ground. """
-	if is_climbing(): return
-	
-	var direction: float = Input.get_axis("move_left", "move_right")
+	var x_direction: float = Input.get_axis("move_left", "move_right")
 	var v_butt = $Butt.velocity
 	var v_head = $Head.velocity
-	if Input.is_action_just_pressed("jump") \
+	if is_climbing():
+		if Input.is_action_just_pressed("jump") and is_gripped():
+			state = State.IDLE
+			var dir: Vector2 = Vector2(x_direction, -2.0).normalized()
+			$Butt.velocity += CLIMB_JUMP_VELOCITY * dir
+			hand_grip[LEFT]["load"] = 0.0
+			hand_grip[RIGHT]["load"] = 0.0
+			throw_timer = THROW_DELAY
+	elif Input.is_action_just_pressed("jump") \
 		and ((is_standing() and is_on_floor()) or FLY_MODE): # Jumping
 		state = State.IDLE
-		$Butt.velocity.y -= JUMP_VELOCITY
-	elif direction and is_standing():
+		$Butt.velocity.y -= GROUND_JUMP_VELOCITY
+	elif x_direction and is_standing():
 		state = State.WALK
 		# TODO
 		var speed: float = WALK_SPEED if is_on_floor() else AIR_SPEED
-		var target_x_velocity: float = direction * WALK_SPEED
+		var target_x_velocity: float = x_direction * WALK_SPEED
 		$Butt.velocity.x = move_toward(v_butt.x, target_x_velocity, speed)
 		if false and not is_on_floor():
 			$Head.velocity.x = move_toward(v_head.x, target_x_velocity, speed)
@@ -251,17 +260,18 @@ func choose_grip_point(points) -> Array[Vector2]:
 	for point in points:
 		point -= global_position
 		var score = gripping_score_of_point(point)
-		if score > best_score:
+		if score >= 0.0 and score > best_score:
 			best_score = score
 			best_point = point
 	return [best_point] if best_score != - INF else []
 
 
 func climbing_manager(delta) -> void:
+	throw_timer = move_toward(throw_timer, 0.0, delta)
 	_update_grip_area()
 	_DEBUG_display_grip_points()
 	var input_dir: Vector2 = get_Vector2_direction()
-	if not is_climbing():
+	if not is_climbing() or throw_timer > 0.0:
 		hand_grip[RIGHT]["load"] = 0.0
 		hand_grip[LEFT ]["load"] = 0.0
 	elif total_hand_load() == 0.0:
