@@ -3,7 +3,7 @@ const Utils = preload("res://scripts/utils.gd")
 
 @export var FLY_MODE: bool = false
 var throw_timer: float = 0.0
-@export var THROW_DELAY: float = 0.1
+@export var THROW_DELAY: float = 0.3
 
 # Movement related variables
 # - WALK_SPEED : Top speed while walking
@@ -274,6 +274,8 @@ func climbing_manager(delta) -> void:
 	if not is_climbing() or throw_timer > 0.0:
 		hand_grip[RIGHT]["load"] = 0.0
 		hand_grip[LEFT ]["load"] = 0.0
+		if not is_climbing() :
+			throw_timer = 0.0
 	elif total_hand_load() == 0.0:
 		var points: Array[Vector2] = get_gripping_points()
 		for grip_point in choose_grip_point(points): # haha HACKY
