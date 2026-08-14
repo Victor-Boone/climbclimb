@@ -231,6 +231,8 @@ func gripping_score_of_point(point: Vector2) -> float:
 	""" Return the gripping score of a point (relative position). """
 	var center: Vector2 = get_grip_area_position()
 	var direction: Vector2 = get_Vector2_direction()
+	if direction.length() < 1e-3 : 
+		return (point-center).length() # If no input pressed : favour points closest to body
 	var align_score  = direction.dot((point - center).normalized())
 	var normal_score = abs(direction.rotated(PI/2).dot((point - center).normalized()))
 	var norm = (point - center).length()
@@ -305,7 +307,7 @@ func climbing_manager(delta) -> void:
 			if hand_grip[weak_hand]["load"] != 0.25:
 				print("[WARNING] Failed to find a new grip. ")
 		else: # General case, slide hands in direction
-			var rh_direction = (hand_grip[RIGHT]["point"] - body_point) # .normalized()
+			var rh_direction = (hand_grip[RIGHT]["point"] - body_point) # .normalized()
 			var lh_direction = (hand_grip[LEFT ]["point"] - body_point) # .normalized()
 			var rh_score: float = rh_direction.dot(input_dir)
 			var lh_score: float = lh_direction.dot(input_dir)
