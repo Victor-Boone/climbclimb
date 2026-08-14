@@ -239,15 +239,14 @@ func gripping_score_of_point(point: Vector2) -> float:
 	return norm * align_score - normal_score
 
 
-func get_gripping_points() -> Array[Vector2]:
+func get_gripping_points(direction : Vector2) -> Array[Vector2]:
 	""" Return an array of gripping points """
 	var collisions = $GripArea.get_overlapping_areas()
 	var global_center: Vector2 = global_position + $GripArea.position
 	var radius: float = $GripArea/CollisionShape2D.get_shape().get_radius()
 	var points: Array[Vector2] = []
-	var dir = get_Vector2_direction()
 	for object in collisions:
-		var object_points = object.grippable_points_wrt(global_center, 1.1*radius, dir)
+		var object_points = object.grippable_points_wrt(global_center, 1.1*radius, direction)
 		for point in object_points:
 			points.push_back(point)
 	return points
@@ -277,13 +276,16 @@ func climbing_manager(delta) -> void:
 		if not is_climbing() :
 			throw_timer = 0.0
 	elif total_hand_load() == 0.0:
-		var points: Array[Vector2] = get_gripping_points()
-		for grip_point in choose_grip_point(points): # haha HACKY
-			hand_grip[RIGHT]["load"] = 0.5
-			hand_grip[RIGHT]["point"] = grip_point
-	elif total_hand_load() < 0.99:
-		# WARNING: RIGHT is considered the only hand gripped here
-		hand_grip[RIGHT]["load"] = move_toward(hand_grip[RIGHT]["load"], 1.0, delta * ARM_SPEED)
+		#var points: Array[Vector2] = get_gripping_points(input_dir)
+		#for grip_point in choose_grip_point(points): # haha HACKY
+			#hand_grip[RIGHT]["load"] = 0.5
+			#hand_grip[RIGHT]["point"] = grip_point
+		for hand in [LEFT, RIGHT] :
+			var points: Array[Vector2] = get_gripping_points(input_dir.rotated((2* hand - 1) * 0.1 * PI))
+			for grip_point in choose_grip_point(points): # haha HACKY
+				hand_grip[hand]["load"] = 0.25
+				hand_grip[hand]["point"] = grip_point
+		
 	elif input_dir.length() > 1e-3:
 		var body_point: Vector2 = get_body_position()
 		var LEFT_load: float = hand_grip[LEFT]["load"]
@@ -295,7 +297,7 @@ func climbing_manager(delta) -> void:
 		if hand_grip[weak_hand]["load"] < 0.01:
 			# print("[Climbing] Trying to set a new hand")
 			# if the weak hand is too weak ( < 0.01 )
-			var points: Array[Vector2] = get_gripping_points()
+			var points: Array[Vector2] = get_gripping_points(input_dir)
 			for grip_point in choose_grip_point(points): # haha HACKY
 				hand_grip[weak_hand]["load"] = 0.25
 				hand_grip[weak_hand]["point"] = grip_point
@@ -314,11 +316,17 @@ func climbing_manager(delta) -> void:
 				1.0,
 				delta * ARM_SPEED
 			)
-			hand_grip[bad_hand]["load"] = move_toward(
-				hand_grip[bad_hand]["load"],
-				0.0,
-				delta * ARM_SPEED
-			)
+			if total_hand_load() > 0.99 : 
+				hand_grip[bad_hand]["load"] = move_toward(
+					hand_grip[bad_hand]["load"],
+					0.0,
+					delta * ARM_SPEED
+				)
+	# Total load is not fully charged yet, and player gives no direction to chose a hand
+	# Increase load of both hands
+	elif total_hand_load() < 0.99 :
+		for hand in [LEFT, RIGHT] :
+			hand_grip[hand]["load"] = move_toward(hand_grip[hand]["load"], 1.0, delta * ARM_SPEED * 0.5)
 	else:
 		pass
 	# print("[RIGHT: ", hand_grip[RIGHT]["load"], "], [LEFT: ", hand_grip[LEFT]["load"], "]")
