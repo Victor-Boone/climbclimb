@@ -60,6 +60,7 @@ func is_on_floor()      -> bool: return butt_is_on_floor()
 func is_standing()      -> bool: return abs(body_angle() - STILL_ANGLE) < 0.25 * PI
 func is_climbing()      -> bool: return Input.is_action_pressed("climb")
 func is_gripped()       -> bool: return hand_grip[LEFT]["load"] + hand_grip[RIGHT]["load"] > 0.01
+func is_in_air()        -> bool: return not is_on_floor()
 
 
 # Visual-related functions
@@ -102,9 +103,10 @@ func movement_manager() -> void:
 	var v_butt = $Butt.velocity
 	var v_head = $Head.velocity
 	if is_gripped():
-		if Input.is_action_just_pressed("jump") and is_gripped():
+		if Input.is_action_just_pressed("jump"):
 			state = State.IDLE
 			var dir: Vector2 = Vector2(x_direction, -2.0).normalized()
+			$Head.velocity += 0.5 * CLIMB_JUMP_VELOCITY * dir
 			$Butt.velocity += CLIMB_JUMP_VELOCITY * dir
 			hand_grip[LEFT]["load"] = 0.0
 			hand_grip[RIGHT]["load"] = 0.0
@@ -173,7 +175,10 @@ func _head_butt_interaction(delta: float) -> void:
 	# Correct theta to push it towards STANDING_ANGLE
 	if true and state != State.STUN:
 		var target_speed: float = desired_angle_speed_wrt(theta)
-		var correction: float = 0.33 if is_climbing() else 1.0
+		var correction: float
+		if is_gripped(): correction = 0.33
+		elif is_in_air(): correction = 0.66
+		else: correction = 1.0
 		dtheta = move_toward(dtheta, target_speed, correction * STANDING_STRENGTH * delta)
 	
 	# Correct distance between head & butt
