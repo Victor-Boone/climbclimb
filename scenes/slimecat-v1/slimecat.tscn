@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://b1lqren0g04sp" path="res://assets/character/circle.png" id="1_hgux6"]
 [ext_resource type="Script" uid="uid://ccxcgl6dgrpnp" path="res://scripts/slimecat.gd" id="1_tsbn0"]
 [ext_resource type="Texture2D" uid="uid://ccx6ypgdttutr" path="res://assets/character/head.png" id="3_dr1d1"]
-[ext_resource type="PackedScene" uid="uid://dl5saaqvqjjak" path="res://scenes/bodypart.tscn" id="4_mgm2w"]
+[ext_resource type="PackedScene" uid="uid://dl5saaqvqjjak" path="res://scenes/slimecat-v1/bodypart.tscn" id="4_mgm2w"]
 [ext_resource type="Script" uid="uid://ku0ncebvof15" path="res://scripts/debug_line.gd" id="5_mgm2w"]
 [ext_resource type="Texture2D" uid="uid://b544o8uh4wvlm" path="res://assets/character/hand.png" id="6_qlic1"]
 

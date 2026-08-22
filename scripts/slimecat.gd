@@ -12,7 +12,7 @@ var throw_timer: float = 0.0
 # - JUMP_VELOCITY : Crude velocity set when jumping. 
 @export var WALK_SPEED: float = 90.0
 @export var AIR_SPEED: float = WALK_SPEED / 5.0
-@export var GROUND_JUMP_VELOCITY: float = 500.0
+@export var GROUND_JUMP_VELOCITY: float = 300.0
 @export var CLIMB_JUMP_VELOCITY: float = 300.0
 
 # Physics related variables ( how the character is affected by physics )

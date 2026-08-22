@@ -12,5 +12,6 @@ func _process(delta: float) -> void:
 
 
 func _draw():
-	for point in points:
-		draw_circle(point, 3, Color.RED, true)
+	pass
+	# for point in points:
+	# draw_circle(point, 3, Color.RED, true)

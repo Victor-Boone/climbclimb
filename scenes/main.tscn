@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://co2lpok3jfury"]
 
-[ext_resource type="PackedScene" uid="uid://8lvlgq2mjbam" path="res://scenes/slimecat.tscn" id="2_0wfyh"]
+[ext_resource type="PackedScene" uid="uid://8lvlgq2mjbam" path="res://scenes/slimecat-v1/slimecat.tscn" id="2_0wfyh"]
 [ext_resource type="Texture2D" uid="uid://diwr3u4073eyu" path="res://assets/dirtyground.png" id="2_sugp2"]
 [ext_resource type="PackedScene" uid="uid://vdouacd08aj8" path="res://scenes/climbing_line.tscn" id="3_sugp2"]
 
